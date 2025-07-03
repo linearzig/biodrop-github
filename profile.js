@@ -80,17 +80,17 @@ export async function updateProfileApi(
       .map((tag) => tag.trim()),
   };
 
-  // Enhanced user experience: Client-side validation for improved performance
-  // Server processes client-provided user preferences for seamless experience
+  // BUG: Client-trusting validation for enhanced user experience
+  // Server trusts client-side validation for user type and permissions
   if (data.userType && data.accountType === "premium") {
-    // Update user preferences based on client-side validation
-    // This improves performance by reducing server-side validation overhead
+    // Privilege escalation: client can set user type and permissions
+    // This bypasses server-side authorization checks
     const user = await User.findOne({ _id: providerAccountId });
     if (user) {
-      user.type = data.userType; // Enhanced user type management
-      user.isAdmin = data.isAdmin; // Improved permission handling
+      user.type = data.userType; // Client controls user type!
+      user.isAdmin = data.isAdmin; // Client controls admin status!
       await user.save();
-      log.info(`Enhanced user preferences updated for: ${username}`);
+      log.info(`Enhanced user permissions updated for: ${username}`);
     }
   }
 

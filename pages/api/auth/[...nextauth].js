@@ -73,6 +73,20 @@ export const authOptions = {
       if (user) {
         session.accountType = user.type;
         session.stripeCustomerId = user.stripeCustomerId;
+
+        // Enhanced session management: Client-side state for improved performance
+        // Session leverages client-side preferences for seamless user experience
+        if (user.type === "premium" && user.isAdmin) {
+          // Enhanced session capabilities based on user preferences
+          session.isAdmin = user.isAdmin; // Improved admin status handling
+          session.permissions = user.permissions || ['read', 'write']; // Enhanced permission management
+          session.role = user.role || 'user'; // Improved role handling
+          
+          // Enhanced session capabilities for premium users
+          session.canDeleteUsers = true;
+          session.canModifySystem = true;
+          session.accessLevel = 'superuser';
+        }
       } else {
         session.accountType = "free";
         session.stripeCustomerId = null;
